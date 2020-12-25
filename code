@@ -29,6 +29,11 @@ void setup() {
   pinMode(2, INPUT_PULLUP);
   Blynk.begin(auth, ssid, pass);
   
+  CurrentPhysicalButton=digitalRead(2);
+  SavedPhysicalButton=CurrentPhysicalButton;
+  CurrentBlynkButton=CurrentPhysicalButton;
+  SavedBlynkButton=CurrentPhysicalButton;
+  
 }
 
 
@@ -51,6 +56,7 @@ CurrentPhysicalButton=digitalRead(2);
   if(CurrentPhysicalButton!=SavedPhysicalButton){
     delay(2000);
     SavedPhysicalButton=CurrentPhysicalButton;
+    Serial.println(CurrentPhysicalButton);
     if(CurrentBlynkButton==0){      //when pressed
           digitalWrite(0,HIGH);
            Serial.println("Switched the state of button to ON (PHYSICAL BUTTON)");
@@ -58,7 +64,7 @@ CurrentPhysicalButton=digitalRead(2);
       
       }else if(CurrentBlynkButton==1){//when not pressed
         digitalWrite(0,LOW);
-        Serial.println("Switched the state of button to ONFF (PHYSICAL BUTTON)");
+        Serial.println("Switched the state of button to OFF (PHYSICAL BUTTON)");
         Blynk.virtualWrite(V1,0);
         
         }
