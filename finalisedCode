@@ -1,0 +1,109 @@
+//0-->WritePhysical
+//2-->readPhysical
+
+
+
+#define BLYNK_PRINT Serial
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+char auth[] = "DDCmAnugVJfdUARQMzyRch-1CPq1q_TS";
+
+char ssid[] = "AMBARKAR";
+char pass[] = "@mbarkar777";
+
+
+
+int CurrentBlynkButton;
+int SavedBlynkButton;
+int CurrentPhysicalButton;
+int SavedPhysicalButton;
+
+
+
+void setup() {
+
+  Serial.begin(9600);
+  pinMode(0, OUTPUT);
+  pinMode(2, INPUT_PULLUP);
+  Blynk.begin(auth, ssid, pass);
+  
+  CurrentPhysicalButton=digitalRead(2);
+  SavedPhysicalButton=CurrentPhysicalButton;
+  CurrentBlynkButton=CurrentPhysicalButton;
+  SavedBlynkButton=CurrentPhysicalButton;
+  
+}
+
+
+BLYNK_WRITE(V1) {
+  CurrentBlynkButton = param.asInt();
+  Serial.println("Blynk value changed and the updated value is->");
+  Serial.println(CurrentBlynkButton);
+
+ if(CurrentBlynkButton!=SavedBlynkButton){
+          delay(2000);
+          if(CurrentBlynkButton==0){
+             digitalWrite(0,HIGH);
+             Serial.println("Switched the state of button to ON from (BLYNK)");
+             Blynk.virtualWrite(V1,1);
+            
+            }else if(CurrentBlynkButton==1){
+              digitalWrite(0,LOW);
+              Serial.println("Switched the state of button to OFF from (BLYNK)");
+              Blynk.virtualWrite(V1,0);
+              }
+
+      
+     
+      SavedBlynkButton=CurrentBlynkButton;
+      
+      }
+  
+}
+
+
+
+void loop() {
+
+
+
+CurrentPhysicalButton=digitalRead(2);
+
+
+  
+  if(CurrentPhysicalButton!=SavedPhysicalButton){
+    delay(2000);
+    SavedPhysicalButton=CurrentPhysicalButton;
+//    Serial.println(CurrentPhysicalButton);
+    
+    
+    if(CurrentPhysicalButton==0){      //when pressed
+          digitalWrite(0,HIGH);
+           Serial.println("Switched the state of button to ON (PHYSICAL BUTTON)");
+           Blynk.virtualWrite(V1,1);
+      
+      }else if(CurrentPhysicalButton==1){//when not pressed
+        digitalWrite(0,LOW);
+        Serial.println("Switched the state of button to OFF (PHYSICAL BUTTON)");
+        Blynk.virtualWrite(V1,0);
+        
+        }
+    
+
+    
+    
+    }
+     Blynk.run();
+        
+        
+
+}
+
+
+
+void BlynkButtonTriggered(){
+  
+  
+  }
